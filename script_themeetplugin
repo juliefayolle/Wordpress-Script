@@ -1,0 +1,140 @@
+#! /bin/bash
+question1 ()
+{
+echo "Voulez vous intéragir avec les thèmes ?";
+select response1 in 'Oui' 'Non';
+  do
+    case $response1 in
+     'Oui') question2;break;;
+     'Non') question7;break;;
+    esac
+  done
+};
+
+question2 ()
+{
+echo "Que voulez vous faire avec les thèmes ?";
+select response2 in 'Installer' 'Supprimer' 'Activer' 'Chercher';
+  do
+    case $response2 in
+     'Installer') question3;break;;
+     'Supprimer') question4;break;;
+     'Activer') question5;break;;
+     'Chercher') question6;break;;
+    esac
+  done
+};
+
+question3 ()
+{
+echo "Quel thème voulez vous installer ?";
+read nametheme;
+wp theme is-installed $nametheme;
+statustheme=$?
+if [[ $statustheme -eq "0" ]];
+then
+  echo "Votre thème est déjà installé"
+elif [[ $statustheme -eq "1" ]];
+then
+  wp theme install $nametheme;
+echo "Votre thème à été installé";
+fi
+question1;
+};
+
+question4 ()
+{
+echo "Quel thème voulez vous supprimer ?";
+read nametheme;
+wp theme uninstall $nametheme;
+echo "$nametheme à été desinstallé";
+question1;
+};
+
+question5 ()
+{
+echo "Quel thème voulez vous activer ?";
+read nametheme;
+wp theme activate $nametheme;
+echo "$nametheme à été activé";
+question1;
+};
+
+question6 ()
+{
+echo "Quel thème voulez vous rechercher ?";
+read nametheme;
+wp theme search $nametheme;
+question1;
+};
+
+
+question7 ()
+{
+echo "Voulez vous intéragir avec les plugins ?";
+select response in 'Oui' 'Non';
+  do
+    case $response in
+     'Oui') question8;break;;
+     'Non') echo "Très bien";break;;
+    esac
+  done
+};
+
+question8 ()
+{
+echo "Que voulez vous faire avec les plugins ?";
+select response3 in 'Installer' 'Supprimer' 'Activer' 'Chercher';
+  do
+    case $response3 in
+     'Installer') question3;break;;
+     'Supprimer') question4;break;;
+     'Activer') question5;break;;
+     'Chercher') question6;break;;
+    esac
+  done
+};
+
+question9 ()
+{
+echo "Quel plugin voulez vous installer ?";
+read nameplugin;
+wp plugin is-installed $nameplugin;
+statusplugin=$?
+if [[ $statusplugin -eq "1" ]];
+   then echo "Votre plugin est déjà installé"
+elif [[ $statusplugin -eq "0" ]];
+   then wp plugin install $nameplugin;
+   echo "Votre plugin à été installé";
+fi
+question7;
+};
+
+question10 ()
+{
+echo "Quel plugin voulez vous supprimer ?";
+read nameplugin;
+wp plugin uninstall $nameplugin;
+echo "$nameplugin à été desinstallé";
+question7;
+};
+
+question11 ()
+{
+echo "Quel plugin voulez vous activer ?";
+read nameplugin;
+wp plugin activate $nameplugin;
+echo "$nameplugin à été activé";
+question7;
+};
+
+question12 ()
+{
+echo "Quel plugin voulez vous rechercher ?";
+read nameplugin;
+wp plugin search $nameplugin;
+question7;
+};
+
+
+question1;

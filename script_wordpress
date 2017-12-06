@@ -1,0 +1,174 @@
+#! /bin/bash
+cyanfonce='\e[0;36m'
+neutre='\e[0;m'
+
+
+echo -e "${cyanfonce}Installation d'apache2 :${neutre} ";
+sudo apt install apache2 ;
+
+echo -e "${cyanfonce}Installation de php7.0${neutre}";
+sudo apt install php7.0;
+
+echo -e "${cyanfonce}Installation de php7.0 mysql${neutre}";
+sudo apt install php7.0-mysql;
+
+echo -e "${cyanfonce}Installation de libapache2-mod-php7.0${neutre}";
+sudo apt install libapache2-mod-php7.0;
+
+echo -e "${cyanfonce}Installation de Wordpress${neutre}";
+sudo curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+sudo chmod 777 wp-cli.phar
+sudo mv wp-cli.phar /usr/local/bin/wp
+wp core download;
+echo -e "${cyanfonce}Nom du site : ${neutre}";
+read nomSite;
+echo -e "${cyanfonce}Nom d'utilisateur admin : ${neutre}";
+read nomAdmin;
+echo -e "${cyanfonce}Mot de passe admin : ${neutre}";
+read mdpAdmin;
+echo -e "${cyanfonce}Votre adresse e-mail:${neutre}";
+read email;
+echo -e "${cyanfonce}Création de votre wordpress : ${neutre}";
+wp config create --dbname=wordpress --dbuser=root --dbpass=0000 --dbhost=localhost --allow-root;
+wp core install --url=192.168.33.10 --title=$nomSite --admin_user=$nomAdmin --admin_password=$mdpAdmin --admin_email=$email --skip-email
+sudo service apache2 restart;
+
+question1 ()
+{
+echo -e "${cyanfonce}Voulez vous intéragir avec les thèmes ?${neutre}";
+select response1 in 'Oui' 'Non';
+  do
+    case $response1 in
+     'Oui') question2;break;;
+     'Non') question7;break;;
+    esac
+  done
+};
+
+question2 ()
+{
+echo -e "${cyanfonce}Que voulez vous faire avec les thèmes ?${neutre}";
+select response2 in 'Installer' 'Supprimer' 'Activer' 'Chercher';
+  do
+    case $response2 in
+     'Installer') question3;break;;
+     'Supprimer') question4;break;;
+     'Activer') question5;break;;
+     'Chercher') question6;break;;
+    esac
+  done
+};
+
+question3 ()
+{
+echo -e "${cyanfonce}Quel thème voulez vous installer ?${neutre}";
+read nametheme;
+wp theme is-installed $nametheme;
+statustheme=$?
+if [[ $statustheme -eq "0" ]];
+then
+  echo -e "${cyanfonce}Votre thème est déjà installé${neutre}"
+elif [[ $statustheme -eq "1" ]];
+then
+  wp theme install $nametheme;
+echo -e "${cyanfonce}Votre thème à été installé${neutre}";
+fi
+question1;
+};
+
+question4 ()
+{
+echo -e "${cyanfonce}Quel thème voulez vous supprimer ?${neutre}";
+read nametheme;
+wp theme uninstall $nametheme;
+echo -e "${cyanfonce}$nametheme à été desinstallé${neutre}";
+question1;
+};
+
+question5 ()
+{
+echo -e "${cyanfonce}Quel thème voulez vous activer ?${neutre}";
+read nametheme;
+wp theme activate $nametheme;
+echo -e "${cyanfonce}$nametheme à été activé${neutre}";
+question1;
+};
+
+question6 ()
+{
+echo -e "${cyanfonce}Quel thème voulez vous rechercher ?${neutre}";
+read nametheme;
+wp theme search $nametheme;
+question1;
+};
+
+
+question7 ()
+{
+echo -e "${cyanfonce}Voulez vous intéragir avec les plugins ?${neutre}";
+select response in 'Oui' 'Non';
+  do
+    case $response in
+     'Oui') question8;break;;
+     'Non') echo "Très bien";break;;
+    esac
+  done
+};
+
+question8 ()
+{
+echo -e "${cyanfonce}Que voulez vous faire avec les plugins ?${neutre}";
+select response3 in 'Installer' 'Supprimer' 'Activer' 'Chercher';
+  do
+    case $response3 in
+     'Installer') question3;break;;
+     'Supprimer') question4;break;;
+     'Activer') question5;break;;
+     'Chercher') question6;break;;
+    esac
+  done
+};
+
+question9 ()
+{
+echo -e "${cyanfonce}Quel plugin voulez vous installer ?${neutre}";
+read nameplugin;
+wp plugin is-installed $nameplugin;
+statusplugin=$?
+if [[ $statusplugin -eq "1" ]];
+   then echo -e "${cyanfonce}Votre plugin est déjà installé${neutre}"
+elif [[ $statusplugin -eq "0" ]];
+   then wp plugin install $nameplugin;
+   echo -e "${cyanfonce}Votre plugin à été installé${neutre}";
+fi
+question7;
+};
+
+question10 ()
+{
+echo -e "${cyanfonce}Quel plugin voulez vous supprimer ?${neutre}";
+read nameplugin;
+wp plugin uninstall $nameplugin;
+echo -e "${cyanfonce}$nameplugin à été desinstallé${neutre}";
+question7;
+};
+
+question11 ()
+{
+echo -e "${cyanfonce}Quel plugin voulez vous activer ?${neutre}";
+read nameplugin;
+wp plugin activate $nameplugin;
+echo -e "${cyanfonce}$nameplugin à été activé${neutre}";
+question7;
+};
+
+question12 ()
+{
+echo -e "${cyanfonce}Quel plugin voulez vous rechercher ?${neutre}";
+read nameplugin;
+wp plugin search $nameplugin;
+question7;
+};
+
+
+question1;
